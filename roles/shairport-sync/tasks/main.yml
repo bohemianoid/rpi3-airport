@@ -1,0 +1,56 @@
+---
+- name: install packages
+  apt: name={{ item }} update_cache=yes cache_valid_time=3600
+  become: yes
+  with_items:
+    - build-essential
+    - git
+    - autoconf
+    - automake
+    - libtool
+    - libdaemon-dev
+    - libasound2-dev
+    - libpopt-dev
+    - libconfig-dev
+    - avahi-daemon
+    - libavahi-client-dev
+    - libssl-dev
+    - libsoxr-dev
+
+- name: download
+  git: repo=https://github.com/mikebrady/shairport-sync.git dest=shairport-sync force=yes
+
+- name: autoreconf build
+  command: autoreconf -i -f chdir=shairport-sync
+
+- name: configure build
+  command: ./configure --with-alsa --with-avahi --with-ssl=openssl --with-soxr --with-metadata --with-systemd chdir=shairport-sync
+
+- name: build
+  command: make chdir=shairport-sync
+
+- name: add group
+  group: name=shairport-sync system=yes
+  become: yes
+
+- name: add user
+  user: name=shairport-sync system=yes createhome=no group=shairport-sync groups=audio shell=/usr/bin/nologin
+  become: yes
+
+- name: install
+  command: make install chdir=shairport-sync
+  become: yes
+  notify:
+    - reboot
+    - wait for reboot
+
+- name: enable
+  service: name=shairport-sync enabled=yes
+  become: yes
+
+- name: configure
+  template: src=shairport-sync.conf.j2 dest=/etc/shairport-sync.conf
+  become: yes
+  notify:
+    - reboot
+    - wait for reboot
