@@ -17,17 +17,29 @@
     - libssl-dev
     - libsoxr-dev
 
+- name: check release
+  uri: url=https://api.github.com/repos/mikebrady/shairport-sync/releases/latest return_content=yes
+  register: release
+
+- name: save response
+  copy: content={{ release.json }} dest=~/shairport-sync.json
+  register: source
+
 - name: download
   git: repo=https://github.com/mikebrady/shairport-sync.git dest=shairport-sync force=yes
+  when: source.changed
 
 - name: autoreconf build
   command: autoreconf -i -f chdir=shairport-sync
+  when: source.changed
 
 - name: configure build
   command: ./configure --with-alsa --with-avahi --with-ssl=openssl --with-soxr --with-metadata --with-systemd chdir=shairport-sync
+  when: source.changed
 
 - name: build
   command: make chdir=shairport-sync
+  when: source.changed
 
 - name: add group
   group: name=shairport-sync system=yes
@@ -40,6 +52,7 @@
 - name: install
   command: make install chdir=shairport-sync
   become: yes
+  when: source.changed
   notify:
     - reboot
     - wait for reboot
