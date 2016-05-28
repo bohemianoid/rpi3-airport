@@ -1,0 +1,14 @@
+---
+ansible_host: host
+ansible_user: user
+ansible_ssh_pass: password
+
+wifi_ssid: network
+wifi_psk: secret
+
+hifiberry_board: hifiberry-dac
+
+player_name: Shairport Sync Player
+player_interpolation: basic
+player_output_device: default
+player_mixer_control_name: PCM

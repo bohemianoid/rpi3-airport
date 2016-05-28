@@ -1,0 +1,23 @@
+---
+- name: install mplayer
+  apt: name=mplayer update_cache=yes cache_valid_time=3600
+  become: yes
+
+- name: disable onboard audio interface
+  lineinfile: dest=/boot/config.txt regexp="^#?dtparam=audio" line="#dtparam=audio=on"
+  become: yes
+
+- name: configure board
+  blockinfile:
+    dest: /boot/config.txt
+    block: |
+      # Enable HifiBerry sound card
+      dtoverlay={{ hifiberry_board }}
+  become: yes
+
+- name: configure ALSA
+  copy: src=asound.conf dest=/etc/asound.conf
+  become: yes
+  notify:
+    - reboot
+    - wait for reboot
