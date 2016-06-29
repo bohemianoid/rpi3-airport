@@ -1,0 +1,8 @@
+---
+- hosts: time-machine
+  roles:
+    - global
+    - upgrade
+    # - wifi
+    - mount
+    - netatalk

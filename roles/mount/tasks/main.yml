@@ -1,0 +1,11 @@
+---
+- name: create mount point
+  file: path=/mnt/time-machine state=directory owner=pi group=pi
+  become: yes
+
+- name: mount time machine
+  mount: name=/mnt/time-machine src="UUID={{ time_machine_volume_uuid }}" fstype=hfsplus state=present
+  become: yes
+  notify:
+    - reboot
+    - wait for reboot
