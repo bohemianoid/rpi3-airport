@@ -3,6 +3,5 @@
   roles:
     - global
     - upgrade
-    # - wifi
     - hifiberry
     - shairport-sync

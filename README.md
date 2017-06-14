@@ -1,7 +1,7 @@
 # rpi3-airport
 
 ```
-nmap -sn 192.168.1.0/24
+cp boot/ssh boot/wpa_supplicant.conf /Volumes/boot
 ```
 
 ```
