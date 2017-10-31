@@ -1,2 +1,2 @@
 ---
-- include: airplay.yml
+- import_playbook: airplay.yml

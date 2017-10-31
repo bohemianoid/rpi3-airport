@@ -1,14 +1,7 @@
 ---
-- name: add backports
-  apt_repository:
-    repo: deb http://ftp.debian.org/debian jessie-backports main
-  become: yes
-
 - name: install shairport-sync
   apt:
     name: shairport-sync
-    default_release: jessie-backports
-    allow_unauthenticated: yes
     update_cache: yes
     cache_valid_time: 3600
   become: yes
